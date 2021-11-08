@@ -1,0 +1,17 @@
+Your project is required to have 4 classes (5 for 5-person groups). You'll also have a driver (main function) that will utilize all of your classes.
+
+First, what classes are you going to have a why? Then, design a UML Detailed Class Diagram for each of your classes, making sure you account for all data/functions you believe will go into the project. Make sure you have a section that details what the functions are going to do and why they're present.
+
+Second, you're going to have a good bit of menuing since this is a command-line environment. Design what this menuing would look like. What's the menu like when someone isn't logged in? Once they are logged in? Are there categories with nested menus? What general idea are you going for as far as navigation goes?
+
+Finally, how are you going to store data? In a database? In individual text files? If files, what format are you going to put your data in?
+
+** the only input/output to the screen should be handled in the driver, make sure you account for this in your design!
+
+ 
+
+A sample document (along with a couple of required questions) can be found here: designBeginning.docx  Download designBeginning.docx 
+
+Deliverables:
+
+A PDF containing your groups design
