@@ -1,3 +1,12 @@
+Design Document: Methods and Tools in SW Development
+
+Group Number: 18
+Group Member names/netIDs:   Andrew Hsu, aeh458
+
+
+What classes are you going to have? Explain why.
+
+
 Your project is required to have 4 classes (5 for 5-person groups). You'll also have a driver (main function) that will utilize all of your classes.
 
 First, what classes are you going to have a why? Then, design a UML Detailed Class Diagram for each of your classes, making sure you account for all data/functions you believe will go into the project. Make sure you have a section that details what the functions are going to do and why they're present.
