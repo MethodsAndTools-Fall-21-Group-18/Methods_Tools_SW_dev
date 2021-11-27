@@ -1,0 +1,253 @@
+
+/*-------------------------------------------------------------------
+--Henry
+CREATE TABLE Category (
+	_id int NOT NULL,
+	name varchar(50) NOT NULL,
+	PRIMARY KEY (_id)
+);
+
+CREATE TABLE Inventory (
+	_id int NOT NULL,
+	categoryID int NOT NULL,
+	name varchar(50) NOT NULL,
+	price float NOT NULL,
+	stock int NOT NULL,
+	PRIMARY KEY (_id),
+	FOREIGN KEY (categoryID) REFERENCES Category(_id)
+);
+
+CREATE TABLE Users (
+	username varchar(50) NOT NULL,
+	password varchar(50) NOT NULL,
+	paymentInfo varchar(50),
+	shippingAddress varchar(50),
+	PRIMARY KEY (username)
+);
+
+CREATE TABLE Cart_Items (
+	username varchar(50) NOT NULL,
+	itemID int NOT NULL,
+	quantity int NOT NULL,
+	PRIMARY KEY (username, itemID),
+	FOREIGN KEY (username) REFERENCES users(username),
+	FOREIGN KEY (itemID) REFERENCES Inventory(_id)
+);
+
+CREATE TABLE Orders (
+	_id int NOT NULL,
+	userID varchar(50) NOT NULL,
+	date Date NOT NULL,
+	paymentInfo varchar(50) NOT NULL,
+	shippingAddress varchar(50) NOT NULL,
+	PRIMARY KEY (_id),
+	FOREIGN KEY (userID) REFERENCES Users(username)
+);
+
+CREATE TABLE Order_Items (
+	_id int NOT NULL,
+	orderID int NOT NULL,
+	itemID int NOT NULL,
+	quantity int NOT NULL,
+	PRIMARY KEY (_id, orderID),
+	FOREIGN KEY (orderID) REFERENCES Orders(_id),
+	FOREIGN KEY (itemID) REFERENCES Inventory(_id)
+);
+
+INSERT INTO category VALUES (0, 'books');
+
+INSERT INTO inventory VALUES (0, 0, 'The Great Gatsby', 6.99, 10);
+INSERT INTO inventory VALUES (1, 0, 'Pride and Prejudice', 9.99, 20);
+INSERT INTO inventory VALUES (2, 0, 'Animal Farm', 12.99, 5);
+INSERT INTO inventory VALUES (3, 0, 'To Kill a Mockingbird', 7.50, 30);
+INSERT INTO inventory VALUES (4, 0, 'Hamlet', 2.99, 2);
+INSERT INTO inventory VALUES (5, 0, 'Learning Python, 5th Edition', 17.99, 11);
+INSERT INTO inventory VALUES (6, 0, 'C++ Primer (5th Edition)', 19.99, 1);
+INSERT INTO inventory VALUES (7, 0, 'Julius Caesar', 25.99, 0);
+INSERT INTO inventory VALUES (8, 0, 'How to Catch a Turkey', 7.99, 35);
+
+--------------------------------------------------------------------------------------
+*/
+
+
+
+INSERT INTO Users VALUES ('randomHuman', 'pa$$word', 1234123412341234, '123 homey rd. Acity, MS, 34567');
+INSERT INTO Users VALUES ('buzzlightyear', 'TopSecret', 98765432101112, '484 galatik ave. Outer, SP 99999');
+INSERT INTO Users VALUES ('joe', 'jogo', 1111111111111111, '321 another ln. Acity, MS, 34251');
+INSERT INTO Users VALUES ('a', 'b', 123, 'home');
+INSERT INTO Users VALUES ('Poe', 'Ravens', 13579086421344, '124 Library blvd. Starkville, NY 37274');
+
+
+
+
+select * from users;
+
+select * from inventory;
+
+select * from category;
+
+select * from Cart_Items;
+
+
+
+--LOG IN PASSWORD CHECK----------------
+SELECT password
+FROM users
+WHERE username = 'USER_LOGIN'
+
+
+-- ADDING ITEM TO CART-----------------------------
+--how to assign cart #
+INSERT INTO cart_items(userid, itemid)
+SELECT userid, item_id
+FROM user, inventory
+--pass from variables within function???
+WHERE username = 'userid'
+AND inventory_id = 'itemid' ;
+
+
+--REMOVING ITEM FROM CART-----------------------
+DELETE * FROM Cart_Items
+WHERE inventory_id = 'itemid'
+AND username = 'userid';
+
+
+--CHECKING OUT ITEMS FROM CART---------------------
+
+SELECT
+    (SELECT quantity FROM Cart_Items WHERE username = 'userid')
+  - (SELECT stock FROM inventory WHERE ) AS Difference
+
+
+
+
+
+
+
+
+--Add an order to the user's order history?????????????????????????????
+
+
+
+--VIEW USER ORDER HISTORY--------------------------------
+SELECT * FROM orders
+WHERE username = 'username';
+
+
+--UPDATING CUSTOMER iNFO: SHIPPING ADDRESS-------------------------
+UPDATE Users
+SET shippingAddress = 'USER_INPUT'
+WHERE username = 'username';
+
+--UPDATING CUSTOMER iNFO: PAYMENT INFORMATION----------------------
+UPDATE Users
+SET paymentinfo = 'USER_INPUT'
+WHERE username = 'username';
+
+--DELETE CUSTOMER iNFO: DELETE ALL USER INFOS--------------------
+DELETE * FROM Cart_Items WHERE userid = 'username';
+DELETE * FROM orders WHERE userid = 'username';
+DELETE * FROM user WHERE username = 'username';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHH
+
+
+
+
+
+INSERT INTO Users VALUES ('randomHuman', 'pa$$word', 1234123412341234, '123 homey rd. Acity, MS, 34567');
+INSERT INTO Users VALUES ('buzzlightyear', 'TopSecret', 98765432101112, '484 galatik ave. Outer, SP 99999');
+INSERT INTO Users VALUES ('joe', 'jogo', 1111111111111111, '321 another ln. Acity, MS, 34251');
+INSERT INTO Users VALUES ('a', 'b', 123, 'home');
+INSERT INTO Users VALUES ('Poe', 'Ravens', 13579086421344, '124 Library blvd. Starkville, NY 37274');
+
+INSERT INTO cart_items VALUES ('a', 'b', 123, 'home');
+
+
+
+
+select password from users;
+
+select * from users;
+
+select * from inventory;
+
+select * from category;
+
+select * from Cart_Items;
+
+select * from order_items;
+
+select * from orders;
+
+
+drop table Orders cascade;
+
+
+ALTER TABLE inventory RENAME COLUMN inventory_id TO _id;
+
+DROP TABLE inventory;
+
+--how to assign cart #
+INSERT INTO cart_items(userid, itemid)
+SELECT userid, itemid
+FROM user, inventory
+--pass from variables within function???
+WHERE username = 'joe'
+AND _id = '3' ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
