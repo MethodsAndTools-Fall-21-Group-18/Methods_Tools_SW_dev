@@ -44,6 +44,7 @@ class Database:
         results = self._cursor.fetchall()
         return len(results) > 0
     
+    """Returns if the user login match"""
     def is_user_exists(self, username, password):
         query = "SELECT username, password FROM users WHERE username LIKE %s AND password LIKE %s"
         vals = (username, password)
