@@ -43,3 +43,14 @@ class Database:
         self._cursor.execute("SELECT username FROM users WHERE username LIKE %s", (username,))
         results = self._cursor.fetchall()
         return len(results) > 0
+    
+    def is_user_exists(self, username, password):
+        query = "SELECT username, password FROM users WHERE username LIKE %s AND password LIKE %s"
+        vals = (username, password)
+        self._cursor.execute(query, vals)
+        result = self._cursor.fetchone()
+
+        if result is None:
+            return False
+        return result[0] == username and result[1] == password
+            

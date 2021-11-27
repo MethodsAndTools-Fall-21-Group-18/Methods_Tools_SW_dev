@@ -41,3 +41,9 @@ def test_edit_payment_info(db):
 def test_edit_shipping_address(db):
     assert db.edit_shipping_address("test", "123 ABC Street") == True
     assert db.edit_shipping_address("notest", "123 ABC Street") == False
+
+
+def test_user_exists(db):
+    assert db.is_user_exists("test", "test") == True
+    assert db.is_user_exists("test", "notest") == False
+    assert db.is_user_exists("notest", "notest") == False
