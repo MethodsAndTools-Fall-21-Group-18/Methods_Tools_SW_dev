@@ -86,6 +86,20 @@ class Database:
         else:
             raise Exception("Final quantity cannot be negative")
     
+    """Fetch cart items based on username"""
+    def fetch_cart_items(self, username):
+        self._cursor.execute(
+            "SELECT I._id, I.name, I.price, C.quantity "
+            "FROM inventory AS I, cart_items AS C "
+            "WHERE I._id = C.itemid AND C.username = %s ",
+            (username,)
+        )
+        cart_item_list = []
+        for row in self._cursor.fetchall():
+            cart_item_dict = {"id": row[0], "name": row[1], "price": row[2], "quantity": row[3]}
+            cart_item_list.append(cart_item_dict)
+        return cart_item_list
+    
     """Returns whether the username exists in the database"""
     def is_username_exists(self, username):
         self._cursor.execute("SELECT username FROM users WHERE username LIKE %s", (username,))

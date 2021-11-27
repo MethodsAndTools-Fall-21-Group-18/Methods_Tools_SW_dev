@@ -103,3 +103,26 @@ def test_remove_cart_item(db):
     # Cleanup
     db.execute("DELETE FROM cart_items WHERE username = 'test'")
     db.commit()
+
+
+def test_fetch_cart_items(db):
+    db.add_cart_item("test", 0, 5)
+    db.add_cart_item("test", 1, 3)
+    db.add_cart_item("test", 2, 1)
+    db.commit()
+
+    # Test that the cart contains items
+    assert len(db.fetch_cart_items("test")) > 0
+    db.commit()
+
+    # Clear the cart itself
+    db.execute("DELETE FROM cart_items WHERE username = 'test'")
+    db.commit()
+    
+    # Test that the cart is empty
+    assert len(db.fetch_cart_items("test")) == 0
+    db.commit()
+
+    # Cleanup
+    db.execute("DELETE FROM cart_items WHERE username = 'test'")
+    db.commit()
