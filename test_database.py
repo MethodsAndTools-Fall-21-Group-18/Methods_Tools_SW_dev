@@ -36,3 +36,8 @@ def test_adding_removing_user(db):
 def test_edit_payment_info(db):
     assert db.edit_payment_info("test", "2142335") == True
     assert db.edit_payment_info("notest", "2142335") == False
+
+
+def test_edit_shipping_address(db):
+    assert db.edit_shipping_address("test", "123 ABC Street") == True
+    assert db.edit_shipping_address("notest", "123 ABC Street") == False

@@ -31,6 +31,13 @@ class Database:
         self._cursor.execute("UPDATE users SET paymentinfo = %s WHERE username = %s", (payment_info, username))
         return True
     
+    """Edits user's shipping address and returns if editing shipping address is success"""
+    def edit_shipping_address(self, username, shipping_address):
+        if not self.is_username_exists(username):
+            return False
+        self._cursor.execute("UPDATE users SET shippingaddress = %s WHERE username = %s", (shipping_address, username))
+        return True
+    
     """Returns whether the username exists in the database"""
     def is_username_exists(self, username):
         self._cursor.execute("SELECT username FROM users WHERE username LIKE %s", (username,))
