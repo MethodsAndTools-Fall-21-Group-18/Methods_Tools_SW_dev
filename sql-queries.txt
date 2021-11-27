@@ -1,0 +1,64 @@
+CREATE TABLE Category (
+	_id int NOT NULL,
+	name varchar(50) NOT NULL,
+	PRIMARY KEY (_id)
+);
+
+CREATE TABLE Inventory (
+	_id int NOT NULL,
+	categoryID int NOT NULL,
+	name varchar(50) NOT NULL,
+	price float NOT NULL,
+	stock int NOT NULL,
+	PRIMARY KEY (_id),
+	FOREIGN KEY (categoryID) REFERENCES Category(_id)
+);
+
+CREATE TABLE Users (
+	username varchar(50) NOT NULL,
+	password varchar(50) NOT NULL,
+	paymentInfo varchar(50),
+	shippingAddress varchar(50),
+	PRIMARY KEY (username)
+);
+
+CREATE TABLE Cart_Items (
+	username varchar(50) NOT NULL,
+	itemID int NOT NULL,
+	quantity int NOT NULL,
+	PRIMARY KEY (username, itemID),
+	FOREIGN KEY (username) REFERENCES users(username),
+	FOREIGN KEY (itemID) REFERENCES Inventory(_id)
+);
+
+CREATE TABLE Orders (
+	_id int NOT NULL,
+	userID varchar(50) NOT NULL,
+	date Date NOT NULL,
+	paymentInfo varchar(50) NOT NULL,
+	shippingAddress varchar(50) NOT NULL,
+	PRIMARY KEY (_id),
+	FOREIGN KEY (userID) REFERENCES Users(username)
+);
+
+CREATE TABLE Order_Items (
+	_id int NOT NULL,
+	orderID int NOT NULL,
+	itemID int NOT NULL,
+	quantity int NOT NULL,
+	PRIMARY KEY (_id, orderID),
+	FOREIGN KEY (orderID) REFERENCES Orders(_id),
+	FOREIGN KEY (itemID) REFERENCES Inventory(_id)
+);
+
+INSERT INTO category VALUES (0, 'books');
+
+INSERT INTO inventory VALUES (0, 0, 'The Great Gatsby', 6.99, 10);
+INSERT INTO inventory VALUES (1, 0, 'Pride and Prejudice', 9.99, 20);
+INSERT INTO inventory VALUES (2, 0, 'Animal Farm', 12.99, 5);
+INSERT INTO inventory VALUES (3, 0, 'To Kill a Mockingbird', 7.50, 30);
+INSERT INTO inventory VALUES (4, 0, 'Hamlet', 2.99, 2);
+INSERT INTO inventory VALUES (5, 0, 'Learning Python, 5th Edition', 17.99, 11);
+INSERT INTO inventory VALUES (6, 0, 'C++ Primer (5th Edition)', 19.99, 1);
+INSERT INTO inventory VALUES (7, 0, 'Julius Caesar', 25.99, 0);
+INSERT INTO inventory VALUES (8, 0, 'How to Catch a Turkey', 7.99, 35);
