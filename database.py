@@ -21,8 +21,14 @@ class Database:
     
     """Removes user and returns if removing user is success"""
     def remove_user(self, username):
-        self._cursor.execute("DELETE FROM users WHERE username=%s", (username,))
-        return self._cursor.rowcount == 1
+        if not self.is_username_exists(username):
+            return False
+        vals = (username,)
+        self._cursor.execute("DELETE FROM order_items WHERE userid=%s", vals)
+        self._cursor.execute("DELETE FROM orders WHERE userid=%s", vals)
+        self._cursor.execute("DELETE FROM cart_items WHERE username=%s", vals)
+        self._cursor.execute("DELETE FROM users WHERE username=%s", vals)
+        return True
     
     """Edits user's payment info and returns if editing payment info is success"""
     def edit_payment_info(self, username, payment_info):
@@ -54,4 +60,3 @@ class Database:
         if result is None:
             return False
         return result[0] == username and result[1] == password
-            
