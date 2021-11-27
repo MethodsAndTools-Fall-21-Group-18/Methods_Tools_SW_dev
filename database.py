@@ -5,6 +5,9 @@ class Database:
         self._connection = psycopg2.connect(database=database, user=user, password=password)
         self._cursor = self._connection.cursor()
     
+    def execute(self, query, vals = ()):
+        self._cursor.execute(query, vals)
+
     def commit(self):
         self._connection.commit()
     
@@ -61,6 +64,27 @@ class Database:
         else:
             final_quantity = str(int(quantity) + int(result[0]))
             self._cursor.execute("UPDATE cart_items SET quantity = %s WHERE username = %s AND itemid = %s", (final_quantity, username, item_id))
+    
+    """Removes item from the cart based on the username, item id, and quantity"""
+    def remove_cart_item(self, username, item_id, quantity):
+        if quantity <= 0:
+            raise Exception("Quantity for adding cart item must be non-negative non-zero number")
+        self._check_user_in_database(username)
+
+        self._cursor.execute("SELECT quantity FROM cart_items WHERE username = %s AND itemid = %s", (username, item_id))
+        result = self._cursor.fetchone()
+        if result is None:
+            raise Exception("No item with id %s exists in the cart" % (item_id))
+        
+        result_quantity = result[0]
+        final_quantity = result_quantity - int(quantity)
+
+        if final_quantity == 0:
+            self._cursor.execute("DELETE FROM cart_items WHERE username = %s AND itemid = %s", (username, item_id))
+        elif final_quantity > 0:
+            self._cursor.execute("UPDATE cart_items SET quantity = %s WHERE username = %s AND itemid = %s", (final_quantity, username, item_id))
+        else:
+            raise Exception("Final quantity cannot be negative")
     
     """Returns whether the username exists in the database"""
     def is_username_exists(self, username):

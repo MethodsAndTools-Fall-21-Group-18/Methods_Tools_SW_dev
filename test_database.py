@@ -69,3 +69,37 @@ def test_add_cart_item(db):
         db.add_cart_item("test", 0, -5000)
         db.add_cart_item("test", 0, 0)
     assert except_info.value.args[0] == "Quantity for adding cart item must be non-negative non-zero number"
+
+
+def test_remove_cart_item(db):
+    # Adds an item and commit to make remove cart item working properly
+    db.add_cart_item("test", 0, 10)
+    db.commit()
+
+    # Removes cart item and commit to test remove cart item function
+    assert db.remove_cart_item("test", 0, 1) == None
+    db.commit()
+
+    # Cause exception when the final quantity is negative
+    with pytest.raises(Exception) as info:
+        db.remove_cart_item("test", 0, 10)
+    assert info.value.args[0] == "Final quantity cannot be negative"
+
+    # Removes item from the cart by the whole quantity
+    assert db.remove_cart_item("test", 0, 9) == None
+    db.commit()
+
+    # Cause exception when removing non-existent cart item
+    with pytest.raises(Exception) as info:
+        db.remove_cart_item("test", 0, 1)
+    assert info.value.args[0] == "No item with id 0 exists in the cart"
+
+    # Cause exception when enter negative or zero number
+    with pytest.raises(Exception) as info:
+        db.remove_cart_item("test", 0, -1000)
+        db.remove_cart_item("test", 0, 0)
+    assert info.value.args[0] == "Quantity for adding cart item must be non-negative non-zero number"
+
+    # Cleanup
+    db.execute("DELETE FROM cart_items WHERE username = 'test'")
+    db.commit()
