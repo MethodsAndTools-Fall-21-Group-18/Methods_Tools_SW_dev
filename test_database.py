@@ -1,3 +1,4 @@
+import pytest
 
 user = "alice"
 password = "password123"
@@ -47,3 +48,24 @@ def test_user_exists(db):
     assert db.is_user_exists("test", "test") == True
     assert db.is_user_exists("test", "notest") == False
     assert db.is_user_exists("notest", "notest") == False
+
+
+def test_add_cart_item(db):
+    # Test with user that does exist
+    assert db.add_cart_item("test", 0, 1) == None
+    
+    # Test with user that does not exist
+    with pytest.raises(Exception) as except_info:
+        db.add_cart_item("notest", 0, 1)
+    assert except_info.value.args[0] == "Username notest does not exist in the database"
+
+    # Test with item that does not exist
+    with pytest.raises(Exception) as except_info:
+        db.add_cart_item("test", 9999, 1)
+    assert except_info.value.args[0] == "Item id 9999 does not exist in the database"
+
+    # Test with negative or non-zero numbers
+    with pytest.raises(Exception) as except_info:
+        db.add_cart_item("test", 0, -5000)
+        db.add_cart_item("test", 0, 0)
+    assert except_info.value.args[0] == "Quantity for adding cart item must be non-negative non-zero number"

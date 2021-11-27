@@ -44,6 +44,24 @@ class Database:
         self._cursor.execute("UPDATE users SET shippingaddress = %s WHERE username = %s", (shipping_address, username))
         return True
     
+    """Adds item to the cart based on the username, item id, and quantity"""
+    def add_cart_item(self, username, item_id, quantity):
+        if quantity <= 0:
+            raise Exception("Quantity for adding cart item must be non-negative non-zero number")
+
+        self._check_user_in_database(username)
+        self._cursor.execute("SELECT quantity FROM cart_items WHERE username = %s AND itemid = %s", (username, item_id))
+        result = self._cursor.fetchone()
+
+        if result is None:
+            try:
+                self._cursor.execute("INSERT INTO cart_items VALUES (%s, %s, %s)", (username, item_id, quantity))
+            except:
+                raise Exception("Item id %s does not exist in the database" % (item_id))
+        else:
+            final_quantity = str(int(quantity) + int(result[0]))
+            self._cursor.execute("UPDATE cart_items SET quantity = %s WHERE username = %s AND itemid = %s", (final_quantity, username, item_id))
+    
     """Returns whether the username exists in the database"""
     def is_username_exists(self, username):
         self._cursor.execute("SELECT username FROM users WHERE username LIKE %s", (username,))
@@ -60,3 +78,8 @@ class Database:
         if result is None:
             return False
         return result[0] == username and result[1] == password
+    
+    def _check_user_in_database(self, username):
+        if not self.is_username_exists(username):
+            raise Exception("Username %s does not exist in the database" % (username))
+
