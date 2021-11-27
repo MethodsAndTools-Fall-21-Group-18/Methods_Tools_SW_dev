@@ -31,3 +31,8 @@ def test_adding_removing_user(db):
     # Test removing user when user does not exist
     assert db.remove_user(user) == False
     db.commit()
+
+
+def test_edit_payment_info(db):
+    assert db.edit_payment_info("test", "2142335") == True
+    assert db.edit_payment_info("notest", "2142335") == False
