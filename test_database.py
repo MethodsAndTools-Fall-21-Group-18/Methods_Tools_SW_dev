@@ -126,3 +126,9 @@ def test_fetch_cart_items(db):
     # Cleanup
     db.execute("DELETE FROM cart_items WHERE username = 'test'")
     db.commit()
+
+
+def test_fetch_account_details(db):
+    result1, result2 = db.fetch_account_details("test")
+    assert type(result1) is str
+    assert type(result2) is str

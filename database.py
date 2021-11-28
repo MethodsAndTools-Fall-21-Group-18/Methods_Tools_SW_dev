@@ -33,6 +33,13 @@ class Database:
         self._cursor.execute("DELETE FROM users WHERE username=%s", vals)
         return True
     
+    """Fetches payment info and shipping addreess of an user"""
+    def fetch_account_details(self, username):
+        self._check_user_in_database(username)
+        self._cursor.execute("SELECT paymentinfo, shippingaddress FROM users WHERE username = %s", (username,))
+        result = self._cursor.fetchone()
+        return result[0], result[1]
+
     """Edits user's payment info and returns if editing payment info is success"""
     def edit_payment_info(self, username, payment_info):
         if not self.is_username_exists(username):
