@@ -1,4 +1,5 @@
 import psycopg2
+from datetime import date, datetime
 
 class Database:
     def __init__(self, database, user, password):
@@ -106,6 +107,50 @@ class Database:
             cart_item_dict = {"id": row[0], "name": row[1], "price": row[2], "quantity": row[3]}
             cart_item_list.append(cart_item_dict)
         return cart_item_list
+    
+    """Checkouts the cart by generating order, copying cart items as order items, and clearing the cart"""
+    def checkout_cart(self, username, payment_info, shipping_address):
+        self._check_user_in_database(username)
+
+        # Fetch cart items
+        cart_item_query = \
+            "SELECT _id, quantity, price " \
+            "FROM cart_items, inventory " \
+            "WHERE itemid = _id AND username = %s"
+        cart_item_vals = (username,)
+        self._cursor.execute(cart_item_query, cart_item_vals)
+        cart_items = self._cursor.fetchall()
+
+        # Raises error if the cart is empty since we cannot checkout with empty cart
+        # and generate an order
+        if len(cart_items) == 0:
+            raise Exception("Cannot checkout empty cart")
+
+        # Generate an order id
+        self._cursor.execute("SELECT _id FROM orders WHERE userid = %s ORDER BY _id DESC LIMIT 1", (username,))
+        result = self._cursor.fetchone()
+        next_id = -1
+        if result == None:
+            next_id = str(0)
+        else:
+            next_id = str(int(result[0]) + 1)
+
+        # Create new order
+        now = datetime.now()
+        insert_date = "%s-%s-%s" % (now.year, now.month, now.day)
+        insert_query = "INSERT INTO orders VALUES (%s, %s, %s, %s, %s)"
+        insert_vals = (next_id, username, insert_date, payment_info, shipping_address)
+        self._cursor.execute(insert_query, insert_vals)
+        
+        # Add order items
+        order_item_query = "INSERT INTO order_items VALUES (%s, %s, %s, %s, %s, %s)"
+        for i in range(len(cart_items)):
+            cart_item = cart_items[i]
+            order_item_vals = (i, next_id, username, cart_item[0], cart_item[1], cart_item[2])
+            self._cursor.execute(order_item_query, order_item_vals)
+        
+        # Clears cart
+        self._cursor.execute("DELETE FROM cart_items WHERE username = %s", (username,))
     
     """Returns whether the username exists in the database"""
     def is_username_exists(self, username):

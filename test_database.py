@@ -132,3 +132,31 @@ def test_fetch_account_details(db):
     result1, result2 = db.fetch_account_details("test")
     assert type(result1) is str
     assert type(result2) is str
+
+
+def test_checkout(db):
+    db.execute("DELETE FROM cart_items WHERE username = 'test'")
+    db.commit()
+
+    db.add_cart_item("test", 0, 5)
+    db.add_cart_item("test", 1, 3)
+    db.add_cart_item("test", 2, 1)
+    db.commit()
+
+    assert db.checkout_cart("test", "23456", "123 ABC Street") == None
+    
+    # Cleanup
+    db.execute("DELETE FROM cart_items WHERE username = 'test'")
+    db.execute("DELETE FROM order_items WHERE userid = 'test'")
+    db.execute("DELETE FROM orders WHERE userid = 'test'")
+    db.commit()
+
+
+def test_checkout_empty_cart(db):
+    db.execute("DELETE FROM cart_items WHERE username = 'test'")
+    db.commit()
+
+    with pytest.raises(Exception) as info:
+        db.checkout_cart("test", "23456", "123 ABC Street")
+    assert info.value.args[0] == "Cannot checkout empty cart"
+
