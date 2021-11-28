@@ -51,6 +51,9 @@ def test_user_exists(db):
 
 
 def test_add_cart_item(db):
+    db.execute("DELETE FROM cart_items WHERE username = 'test'")
+    db.commit()
+
     # Test with user that does exist
     assert db.add_cart_item("test", 0, 1) == None
     
@@ -72,6 +75,9 @@ def test_add_cart_item(db):
 
 
 def test_remove_cart_item(db):
+    db.execute("DELETE FROM cart_items WHERE username = 'test'")
+    db.commit()
+
     # Adds an item and commit to make remove cart item working properly
     db.add_cart_item("test", 0, 10)
     db.commit()
@@ -106,6 +112,9 @@ def test_remove_cart_item(db):
 
 
 def test_fetch_cart_items(db):
+    db.execute("DELETE FROM cart_items WHERE username = 'test'")
+    db.commit()
+
     db.add_cart_item("test", 0, 5)
     db.add_cart_item("test", 1, 3)
     db.add_cart_item("test", 2, 1)
