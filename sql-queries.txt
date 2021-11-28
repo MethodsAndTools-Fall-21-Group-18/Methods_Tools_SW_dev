@@ -47,6 +47,7 @@ CREATE TABLE Order_Items (
 	userID varchar(50) NOT NULL,
 	itemID int NOT NULL,
 	quantity int NOT NULL,
+	price float NOT NULL,
 	PRIMARY KEY (_id, orderID, userID),
 	FOREIGN KEY (orderID, userID) REFERENCES Orders(_id, userID),
 	FOREIGN KEY (itemID) REFERENCES Inventory(_id)
