@@ -114,7 +114,7 @@ class Database:
 
         # Fetch cart items
         cart_item_query = \
-            "SELECT _id, quantity, price " \
+            "SELECT _id, quantity, price, stock " \
             "FROM cart_items, inventory " \
             "WHERE itemid = _id AND username = %s"
         cart_item_vals = (username,)
@@ -151,6 +151,12 @@ class Database:
         
         # Clears cart
         self._cursor.execute("DELETE FROM cart_items WHERE username = %s", (username,))
+
+        # Decrements the inventory stock
+        decrement_query = "UPDATE inventory SET stock = %s WHERE _id = %s"
+        for item in cart_items:
+            new_stock = str(int(item[3]) - int(item[1]))
+            self._cursor.execute(decrement_query, (new_stock, item[0]))
     
     """Returns whether the username exists in the database"""
     def is_username_exists(self, username):
