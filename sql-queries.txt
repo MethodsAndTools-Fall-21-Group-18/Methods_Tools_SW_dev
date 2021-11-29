@@ -47,6 +47,7 @@ CREATE TABLE Order_Items (
 	userID varchar(50) NOT NULL,
 	itemID int NOT NULL,
 	quantity int NOT NULL,
+	price float NOT NULL,
 	PRIMARY KEY (_id, orderID, userID),
 	FOREIGN KEY (orderID, userID) REFERENCES Orders(_id, userID),
 	FOREIGN KEY (itemID) REFERENCES Inventory(_id)
@@ -63,3 +64,5 @@ INSERT INTO inventory VALUES (5, 0, 'Learning Python, 5th Edition', 17.99, 11);
 INSERT INTO inventory VALUES (6, 0, 'C++ Primer (5th Edition)', 19.99, 1);
 INSERT INTO inventory VALUES (7, 0, 'Julius Caesar', 25.99, 0);
 INSERT INTO inventory VALUES (8, 0, 'How to Catch a Turkey', 7.99, 35);
+
+INSERT INTO users VALUES ("test", "test");
