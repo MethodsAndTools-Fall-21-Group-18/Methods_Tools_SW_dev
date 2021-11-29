@@ -158,6 +158,10 @@ class Database:
             new_stock = str(int(item[3]) - int(item[1]))
             self._cursor.execute(decrement_query, (new_stock, item[0]))
     
+    def fetch_inventory(self, category_id):
+        self._cursor.execute("SELECT _id, name, price, stock FROM inventory WHERE categoryid = %s ORDER BY _id", (str(category_id),))
+        return self._cursor.fetchall()
+
     """Returns whether the username exists in the database"""
     def is_username_exists(self, username):
         self._cursor.execute("SELECT username FROM users WHERE username LIKE %s", (username,))
