@@ -12,7 +12,7 @@ class User:
         self._payment_info = ""
         self._shipping_address = ""
         self._cart = ShoppingCart()
-        self._orders = OrderHistory(username)
+        self._orders = OrderHistory()
 
     def verify_login(self):
         if not DB.is_user_exists(self.username, self.password):
@@ -59,7 +59,16 @@ class User:
         self._cart.checkout(self.username, self._payment_info, self._shipping_address)
     
     def view_cart(self):
-        self._cart.view()
+        self._cart.view(self.username)
+
+    def cart_empty(self):
+        return self._cart.empty(self.username)
+
+    def fetch_cart_items(self):
+        return self._cart.fetch_items(self.username)
+    
+    def view_orders(self):
+        self._orders.view(self.username)
 
     @property
     def username(self):
@@ -68,7 +77,6 @@ class User:
     @username.setter
     def username(self, value):
         self._username = value
-        self._orders.username = value
     
     @property
     def password(self):
@@ -89,19 +97,37 @@ class User:
 
 class ShoppingCart:
     
-    def view(self):
-        raise NotImplementedError
+    def view(self, username):
+        cart_items = DB.fetch_cart_items(username)
+        print("Name | Price | Quantity")
+        print("-----------------------")
+        for item in cart_items:
+            print("{} | {} | {}".format(item["name"], item["price"], item["quantity"]))
 
     def checkout(self, username, payment_info, shipping_address):
         DB.checkout_cart(username, payment_info, shipping_address)
+        DB.commit()
+    
+    def empty(self, username):
+        return DB.is_cart_empty(username)
+    
+    def fetch_items(self, username):
+        cart_items = DB.fetch_cart_items(username)
+        converted_items = []
+        for item in cart_items:
+            converted_items.append(InventoryItem(item["id"], item["name"], item["price"], item["quantity"]))
+        return converted_items
 
 
 class OrderHistory:
-    def __init__(self, username):
-        self.username = username
+    def view(self, username):
+        orders = DB.fetch_orders(username)
 
-    def view(self):
-        raise NotImplementedError
+        for order in orders:
+            print("Order #{}".format(order[0]["orderid"]))
+            print("Name | Price | Quantity")
+            for item in order:
+                print("- {} | {} | {}".format(item["name"], item["price"], item["quantity"]))
 
 
 class Inventory:
@@ -114,8 +140,8 @@ class Inventory:
         for row in rows:
             item_id = row[0]
             name = row[1]
-            price = row[2]
-            stock = row[3]
+            price = float(row[2])
+            stock = int(row[3])
 
             items.append(InventoryItem(item_id, name, price, stock))
         return items
@@ -130,9 +156,11 @@ class InventoryItem:
 
     def add_to_cart(self, username, quantity):
         DB.add_cart_item(username, self.item_id, quantity)
+        DB.commit()
     
     def remove_from_cart(self, username, quantity):
         DB.remove_cart_item(username, self.item_id, quantity)
+        DB.commit()
 
     def __str__(self):
         return "{} | {} | {}".format(self.item_id, self.stock, self.name)

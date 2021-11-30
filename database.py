@@ -158,6 +158,32 @@ class Database:
             new_stock = str(int(item[3]) - int(item[1]))
             self._cursor.execute(decrement_query, (new_stock, item[0]))
     
+    def fetch_orders(self, username):
+        query = \
+            "SELECT O.orderid, O._id, I.name, O.price, O.quantity " \
+            "FROM order_items AS O, inventory AS I " \
+            "WHERE O.userid = %s AND I._id = O.itemid " \
+            "ORDER BY O.orderid "
+        vals = (username,)
+        self._cursor.execute(query, vals)
+        order_items = self._cursor.fetchall()
+
+        orders = []
+        orders_idx = -1
+        for item in order_items:
+            if orders_idx != int(item[0]):
+                orders.append([])
+                orders_idx += 1
+            order_info = {"orderid": item[0], "linenum": item[1], "name": item[2], "price": item[3], "quantity": item[4]}
+            orders[orders_idx].append(order_info)
+        return orders
+
+    """Returns if the user's cart is empty"""
+    def is_cart_empty(self, username):
+        self._cursor.execute("SELECT * FROM cart_items WHERE username=%s", (username,))
+        cart_items = self._cursor.fetchall()
+        return len(cart_items) == 0
+
     def fetch_inventory(self, category_id):
         self._cursor.execute("SELECT _id, name, price, stock FROM inventory WHERE categoryid = %s ORDER BY _id", (str(category_id),))
         return self._cursor.fetchall()
